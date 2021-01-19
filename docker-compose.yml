@@ -1,0 +1,50 @@
+version: "3.3"
+services:
+  db:
+    container_name: recipes-example-db
+    restart: always
+    image: recipes-example-db
+    build:
+      context: ./db
+    volumes:
+      - db:/var/lib/postgresql/data1
+    env_file:
+      - ./.env
+    networks:
+      - network
+    ports:
+      - 5432:5432
+  graphql:
+    container_name: recipes-example-graphql
+    restart: always
+    image: recipes-example-graphql
+    build:
+        context: ./graphql
+    env_file:
+        - ./.env
+    depends_on:
+        - db
+    networks:
+        - network
+    ports:
+        - 5433:5433
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: admin@linuxhint.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8080:80"
+    volumes: 
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
+
+networks:
+  network:
+
+volumes:
+  db:
+  pgadmin-data:

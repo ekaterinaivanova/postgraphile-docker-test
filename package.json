@@ -1,0 +1,12 @@
+{
+  "name": "postgriphile-docker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "docker-compose build",
+    "start":"docker-compose up"
+  },
+  "author": "",
+  "license": "ISC"
+}
