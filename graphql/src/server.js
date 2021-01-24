@@ -7,7 +7,8 @@ http
       watchPg: true,
       graphiql: true,
       enhanceGraphiql: true,
-      dynamicJson: true
+      dynamicJson: true,
+      enableCors: true
     })
   )
   .listen(process.env.PORT);

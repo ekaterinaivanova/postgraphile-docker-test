@@ -1,8 +1,10 @@
 \connect recipes-example;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 /*Create user table in public schema*/
 CREATE TABLE public.user (
-    id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT,
@@ -14,18 +16,18 @@ COMMENT ON TABLE public.user IS
 
 /*Create recipes table in public schema*/
 CREATE TABLE public.recipes (
-    id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     content JSONB NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    author_id INTEGER NOT NULL REFERENCES public.user(id)
+    author_id uuid NOT NULL REFERENCES public.user(id)
 );
 
 COMMENT ON TABLE public.recipes IS
 'Recipess written by a user.';
 
 CREATE TABLE public.ingredient_types (
-    id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     description TEXT
 );
@@ -35,16 +37,16 @@ COMMENT ON TABLE public.ingredient_types IS
 
 
 CREATE TABLE public.ingredients (
-    id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
-    type_id INTEGER REFERENCES public.ingredient_types(id)
+    type_id uuid REFERENCES public.ingredient_types(id)
 );
 
 COMMENT ON TABLE public.ingredients IS
 'Ingredients used in recipes.';
 
 CREATE TABLE public.units (
-    id  INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     description TEXT
 );
@@ -53,10 +55,10 @@ COMMENT ON TABLE public.units IS
 'Ingredients quantity units.';
 
 CREATE TABLE public.recipes_ingredients (
-    ingredient_id INT NOT NULL,
-    recipe_id INT NOT NULL,
+    ingredient_id uuid NOT NULL,
+    recipe_id uuid NOT NULL,
     quantity INT,
-	unit_id INT REFERENCES units (id),
+	unit_id uuid REFERENCES units (id),
     FOREIGN KEY (ingredient_id) REFERENCES ingredients (id) ON DELETE CASCADE,
     FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE,
     PRIMARY KEY (ingredient_id, recipe_id)
